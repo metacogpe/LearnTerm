@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>기술을 익히자!</title>
+    <title>학이시습 불역호아!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css" />
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
@@ -14,7 +14,7 @@
         }
 
         .term-list {
-            width: 500px;
+            width: 800px;
             margin: 20px auto 0 auto;
         }
 
@@ -60,29 +60,29 @@
                         <div class="card-content">   
                         <div class="media">
                             <div class="media-left">
-                            <figure class="image is-48x48">
+                            <figure class="image is-128x128">
                                 <img
-                                src="${term.img_url}"
+                                src="${term.each_img}"
                                 alt="Placeholder image"
                                 />
                             </figure>
                             </div>
                             <div class="media-content">
-                            <a href="#" target="_blank" class="term-name title is-4">${term.name} (좋아요: ${term.like})</a>
-                            <p class="subtitle is-6">s${term.recent}</p>
+                            <a href="#" target="_blank" class="term-name title is-4">${term.each_term} (복습: ${term.like})</a>
+                            <p class="subtitle is-6">s${term.each_desc}</p>
                             </div>
                         </div>
                         </div>
                         <footer class="card-footer">
-                        <a href="#" onclick="like_term('${term.name}')" class="card-footer-item has-text-info">
-                            위로!
+                        <a href="#" onclick="like_term('${term.each_term}')" class="card-footer-item has-text-info">
+                            복습!
                             <span class="icon">
                             <i class="fas fa-thumbs-up"></i>
                             </span>
                         </a>
 
-                        <a href="#" onclick="unlike_term('${term.name}')" class="card-footer-item has-text-info">
-                            아래로!
+                        <a href="#" onclick="unlike_term('${term.each_term}')" class="card-footer-item has-text-info">
+                            다시 보기!
                             <span class="icon">
                             <i class="fas fa-thumbs-down"></i>
                             </span>
@@ -91,8 +91,8 @@
 
 
 
-                        <a href="#" onclick="delete_term('${term.name}')" class="card-footer-item has-text-danger">
-                            삭제
+                        <a href="#" onclick="delete_term('${term.each_term}')" class="card-footer-item has-text-danger">
+                            학습완료(삭제)!
                             <span class="icon">
                             <i class="fas fa-ban"></i>
                             </span>
@@ -107,13 +107,38 @@
 
         }
 
-        function like_term(name) {
+        function delete_term(each_term) {
+            //alert('delete'+name);
+            $.ajax({
+                type: 'POST',
+                url: '/api/delete',
+                data: {
+                    "term_give":each_term      // app.py에서 form을 통해 받은 값 키 term_receive = request.form['term_give'] 
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let msg = response['msg'];
+                        alert(msg);
+
+                        window.location.reload();
+
+                    }
+                }
+            });
+        }
+
+
+
+
+
+
+        function like_term(each_term) {
             // alert('like'+name);
             $.ajax({
                 type: 'POST',
                 url: '/api/like',
                 data: {
-                    'name_give':name   // 키값 정의 
+                    'term_give':each_term   // 키값 정의 -> appy.py로 전달할 key를 'term_giv'로 정의 
                 },
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -125,6 +150,27 @@
                     }
                 }
             });
+        }
+
+        
+        function unlike_term(each_term) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/unlike',
+                data: {
+                    'term_give':each_term   // 키값 정의 
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let msg = response['msg'];
+
+                        alert(msg);
+
+                        window.location.reload();
+                    }
+                }
+            });
+            
         }
 
 
@@ -139,7 +185,7 @@
         <div class="hero-body">
             <div class="container make-center">
                 <h1 class="title">
-                    ICT 용어 익히기😆
+                    학이시습😆
                 </h1>
                 <h2 class="subtitle">
                     랜덤하게 보기
