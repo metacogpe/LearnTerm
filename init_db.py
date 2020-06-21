@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.dbterms
 
 # 용어별 링크에 접근하기 위한 Seq.번호를 가져오기 
