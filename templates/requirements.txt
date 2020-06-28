@@ -1,0 +1,4 @@
+flask
+mongoClient
+bs4
+requests

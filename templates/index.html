@@ -43,17 +43,31 @@
     <script>
         $(document).ready(function() {
             // index.html 로드가 완료되면 자동으로 terms_list() 함수를 호출합니다.
+            $('#term-box').empty(); // 초기화
             terms_list();
         });
+
+        window.onscroll = function() {
+            let d = document.documentElement;
+            let offset = d.scrollTop + window.innerHeight;
+            let height = d.offsetHeight;
+
+            if (offset >= height) {
+                console.log('At the bottom');
+                terms_list();
+            }
+        };
+        let page = 0;
 
         function terms_list() {
             $.ajax({
                 type: 'GET',
-                url: '/api/list',
+                url: '/api/list?page=' + page,
                 data: {},
                 success: function(response) {
                     if (response['result'] == 'success') {
                         show_term(response['terms_list'])
+                        page++;
                     }
                 }
             });
@@ -61,7 +75,7 @@
 
         function show_term(terms_list) {
             // console.log(terms_list);
-            $('#term-box').empty(); // 초기화 
+            //$('#term-box').empty(); // 초기화 
             // 모두 표시 위해 for of 사용 
             for (let term of terms_list) {
                 //console.log(term);
@@ -72,14 +86,14 @@
                             <div class="media-left">
                             <figure class="image is-128x128">
                                 <img
-                                src="${term.each_img}"
+                                src=" ${term.each_img !=null ? term.each_img:'https://notion-emojis.s3-us-west-2.amazonaws.com/v0/svg-twitter/1f5d3-fe0f.svg'}  "    
                                 alt="Placeholder image"
                                 />
                             </figure>
                             </div>
                             <div class="media-content">
                             <a href="#" target="_blank" class="term-name title is-4">${term.each_term} (복습: ${term.like})</a>
-                            <p class="subtitle is-6" >s${term.each_desc}</p>
+                            <p class="subtitle is-6" >s${term.each_desc.replace(/\./g,".</br> &nbsp;&nbsp; ")}</p>
                             </div>
                         </div>
                         </div>

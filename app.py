@@ -18,16 +18,17 @@ def home():
 # API 역할을 하는 부분
 @app.route('/api/list', methods=['GET'])
 def terms_list():
+    page = int(request.args['page'])  # 페이지 단위로 스크롤하기 위해 page 인수로 받아서 처리 
     # 1. learnterm 목록 전체를 검색합니다. 
     # 참고) find({},{'_id':False})
     # 2. 성공하면 success 메시지와 함께 terms_list 목록을 클라이언트에 전달합니다.
 
-    terms_list = list(db.learnterm.find({},{'_id':False}) ) # 커서를 list로 변환 
-    random.shuffle(terms_list)
+    terms_list = list(db.learnterm.find({},{'_id':False}).skip(page*10).limit(10)) # DB조회 결과 커서를 list로 변환, 10개만 우선 조회, 이후에는 page곱하기 후 10개만 조회
+    random.shuffle(terms_list)  # terms_list를 랜덤하게 다시 셔플한 다음에 terms_list로 저장하는 함수
 
     #print(terms_list)
     
-    return jsonify({'result': 'success','msg':'list 연결되었습니다!', 'terms_list':terms_list})
+    return jsonify({'result': 'success','msg':'list 연결되었습니다!', 'terms_list':terms_list})  # index.html에 있는 'terms_list'로 전달 
 
 
 @app.route('/api/like', methods=['POST'])
@@ -45,6 +46,8 @@ def term_like():
     db.learnterm.update_one({'each_term':term_receive},{'$set': {'like':new_like}})
     # 5. 성공하면 success 메시지를 반환합니다.
     return jsonify({'result': 'success','msg':'복습완료! 수고하셨습니다!'})
+
+    
 
 @app.route('/api/unlike', methods=['POST'])
 def term_unlike():
