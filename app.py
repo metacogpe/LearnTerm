@@ -25,7 +25,7 @@ def terms_list():
     terms_list = list(db.learnterm.find({},{'_id':False}) ) # 커서를 list로 변환 
     random.shuffle(terms_list)
 
-    print(terms_list)
+    #print(terms_list)
     
     return jsonify({'result': 'success','msg':'list 연결되었습니다!', 'terms_list':terms_list})
 
@@ -34,7 +34,7 @@ def terms_list():
 def term_like():
     # 1. 클라이언트가 전달한 term_give를 term_receive 변수에 넣습니다.
     term_receive = request.form['term_give']
-    print(term_receive)
+    #print(term_receive)
     # 2. learnterm 목록에서 find_all으로 each_term이 term_receive와 일치하는 each_term을 찾습니다.
     term = db.learnterm.find_one({'each_term':term_receive})
     
@@ -89,8 +89,6 @@ def term_delete():
 
 #     # 5. 성공하면 success 메시지를 반환합니다.
 #     return jsonify({'result': 'success','msg':'like 연결되었습니다!'})
-
-
 
 
 

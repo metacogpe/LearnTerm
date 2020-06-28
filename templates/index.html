@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+    <!-- og tag -->
+    <meta property="og:title" content="학이시습 불역호아!" />
+    <meta property="og:description" content="반복학습이 메타인지에는 가장 좋습니다. 자신이 잘 알고 있는지 점검해 볼 수 있습니다." />
+    <meta property="og:image" content="http://www.amylovespet.co.kr/shopimages/lovespet/0120040000343.jpg?1519200763" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>학이시습 불역호아!</title>
@@ -12,28 +17,32 @@
         .make-center {
             text-align: center;
         }
-
+        
         .term-list {
             width: 800px;
             margin: 20px auto 0 auto;
         }
-
+        
         .term-name {
             display: inline-block;
         }
-
+        
         .term-name:hover {
             text-decoration: underline;
         }
-
+        
         .card {
             margin-bottom: 15px;
         }
+        /*.termdesc {
+            white-space: pre-line;
+        }
+        */
     </style>
-    
+
     <script>
-        $(document).ready(function () {
-            // index.html 로드가 완료되면 자동으로 show_term() 함수를 호출합니다.
+        $(document).ready(function() {
+            // index.html 로드가 완료되면 자동으로 terms_list() 함수를 호출합니다.
             terms_list();
         });
 
@@ -42,19 +51,20 @@
                 type: 'GET',
                 url: '/api/list',
                 data: {},
-                success: function (response) {
+                success: function(response) {
                     if (response['result'] == 'success') {
                         show_term(response['terms_list'])
                     }
                 }
             });
         }
+
         function show_term(terms_list) {
             // console.log(terms_list);
-            $('#term-box').empty();  // 초기화 
-            // 50개를 표시 위해 for of 사용 
+            $('#term-box').empty(); // 초기화 
+            // 모두 표시 위해 for of 사용 
             for (let term of terms_list) {
-                console.log(term);
+                //console.log(term);
                 let temp_card = `
                     <div class="card">
                         <div class="card-content">   
@@ -69,7 +79,7 @@
                             </div>
                             <div class="media-content">
                             <a href="#" target="_blank" class="term-name title is-4">${term.each_term} (복습: ${term.like})</a>
-                            <p class="subtitle is-6">s${term.each_desc}</p>
+                            <p class="subtitle is-6" >s${term.each_desc}</p>
                             </div>
                         </div>
                         </div>
@@ -88,9 +98,6 @@
                             </span>
                         </a>
 
-
-
-
                         <a href="#" onclick="delete_term('${term.each_term}')" class="card-footer-item has-text-danger">
                             학습완료(삭제)!
                             <span class="icon">
@@ -100,34 +107,13 @@
                         </footer>
                     </div>
 
-                    ` ;
+                    `;
 
-                $('#term-box').append(temp_card);   // 카드를 추가 
+                $('#term-box').append(temp_card); // 카드를 추가 
+
             }
 
         }
-
-        function delete_term(each_term) {
-            //alert('delete'+name);
-            $.ajax({
-                type: 'POST',
-                url: '/api/delete',
-                data: {
-                    "term_give":each_term      // app.py에서 form을 통해 받은 값 키 term_receive = request.form['term_give'] 
-                },
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        let msg = response['msg'];
-                        alert(msg);
-
-                        window.location.reload();
-
-                    }
-                }
-            });
-        }
-
-
 
 
 
@@ -138,9 +124,9 @@
                 type: 'POST',
                 url: '/api/like',
                 data: {
-                    'term_give':each_term   // 키값 정의 -> appy.py로 전달할 key를 'term_giv'로 정의 
+                    'term_give': each_term // 키값 정의 -> appy.py로 전달할 key를 'term_giv'로 정의 
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response['result'] == 'success') {
                         let msg = response['msg'];
 
@@ -152,15 +138,15 @@
             });
         }
 
-        
+
         function unlike_term(each_term) {
             $.ajax({
                 type: 'POST',
                 url: '/api/unlike',
                 data: {
-                    'term_give':each_term   // 키값 정의 
+                    'term_give': each_term // 키값 정의 
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response['result'] == 'success') {
                         let msg = response['msg'];
 
@@ -170,14 +156,31 @@
                     }
                 }
             });
-            
+
         }
 
+        function delete_term(each_term) {
+            //alert('delete'+name);
+            $.ajax({
+                type: 'POST',
+                url: '/api/delete',
+                data: {
+                    "term_give": each_term // app.py에서 form을 통해 받은 값 키 term_receive = request.form['term_give'] 
+                },
+                success: function(response) {
+                    if (response['result'] == 'success') {
+                        let msg = response['msg'];
+                        alert(msg);
 
-       
-       
+                        window.location.reload();
 
+                    }
+                }
+            });
+        }
     </script>
+
+
 </head>
 
 <body>
@@ -188,57 +191,16 @@
                     학이시습😆
                 </h1>
                 <h2 class="subtitle">
-                    랜덤하게 보기
+                    랜덤하게 학습하기
                 </h2>
             </div>
         </div>
     </section>
     <div class="term-list" id="term-box">
-
-
-        <!-- <div class="card">
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-left">
-                        <figure class="image is-48x48">
-                            <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fssl.pstatic.net%2Fsstatic%2Fpeople%2Fportrait%2F201807%2F20180731143610623-6213324.jpg&type=u120_150&quality=95"
-                                alt="Placeholder image" />
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <a href="#" target="_blank" class="term-name title is-4">김다미 (좋아요: 3)</a>
-                        <p class="subtitle is-6">안녕, 나의 소울메이트(가제)</p>
-                    </div>
-                </div>
-            </div>
-            <footer class="card-footer">
-                <a href="#" onclick="like_term('김다미')" class="card-footer-item has-text-info">
-                    위로!
-                    <span class="icon">
-                        <i class="fas fa-thumbs-up"></i>
-                    </span>
-                </a>
-
-                <a href="#" onclick="unlike_term('김다미')" class="card-footer-item has-text-info">
-                    아래로!
-                    <span class="icon">
-                        <i class="fas fa-thumbs-down"></i>
-                    </span>
-                </a>
-
-
-
-                <a href="#" onclick="delete_term('김다미')" class="card-footer-item has-text-danger">
-                    삭제
-                    <span class="icon">
-                        <i class="fas fa-ban"></i>
-                    </span>
-                </a>
-            </footer>
-        </div> -->
-
-
     </div>
+
+
+
 </body>
 
 </html>
