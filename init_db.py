@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from pymongo import MongoClient
+from pymongo import MongoClient # pip install pymongo
 import random
 
 client = MongoClient('localhost', 27017)
